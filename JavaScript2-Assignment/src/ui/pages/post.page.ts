@@ -4,7 +4,7 @@ export function renderPostPage(container: HTMLElement, postId: string): void {
     <p>Viser post med id: <strong>${postId}</strong></p>
 
     <nav>
-      <a href="#/feed">Til Feed</a>
+      <a href="#/feed">To Feed</a>
     </nav>
   `;
 }
