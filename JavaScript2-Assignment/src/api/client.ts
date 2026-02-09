@@ -1,48 +1,38 @@
-import { API_BASE_URL } from "../app/config";
-import { getApiKey, getToken } from "../utils/storage";
+import { API_BASE_URL } from "./config";
+import { getToken } from "../utils/storage";
 
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
-
-interface RequestOptions {
-  method?: HttpMethod;
-  body?: unknown;
-}
-
+/**
+ * Makes an HTTP request to the Noroff API.
+ */
 export async function apiRequest<T>(
   endpoint: string,
-  options: RequestOptions = {}
+  options: RequestInit & { body?: unknown } = {}
 ): Promise<T> {
   const token = getToken();
-  const apiKey = getApiKey();
 
   const headers: HeadersInit = {
     "Content-Type": "application/json",
+    ...(options.headers ?? {}),
   };
 
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
-  if (apiKey) {
-    headers["X-Noroff-API-Key"] = apiKey;
-  }
-
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    method: options.method ?? "GET",
+  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
     headers,
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
 
-  if (!response.ok) {
-    let message = "API error";
-    try {
-      const errorData = await response.json();
-      message = errorData?.message ?? message;
-    } catch {
-      // ignore JSON parse errors
-    }
-    throw new Error(`${response.status}: ${message}`);
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+
+  if (!res.ok) {
+    const message =
+      (data && (data.message || data.errors?.[0]?.message)) || "API error";
+    throw new Error(`${res.status}: ${message}`);
   }
 
-  return response.json() as Promise<T>;
+  return data as T;
 }

@@ -1,33 +1,30 @@
-import { getToken } from "../utils/storage.ts";
-import { renderLoginPage } from "../ui/pages/login.pages.ts";
+import { getToken } from "../utils/storage";
+import { renderLoginPage } from "../ui/pages/login.page";
 import { renderRegisterPage } from "../ui/pages/register.page";
-import { renderFeedPage } from "../ui/pages/feed.page.ts";
-import { renderProfilePage } from "../ui/pages/profile.page.ts";
-import { renderPostPage } from "../ui/pages/post.page.ts";
+import { renderFeedPage } from "../ui/pages/feed.page";
+import { renderProfilePage } from "../ui/pages/profile.page";
+import { renderPostPage } from "../ui/pages/post.page";
 
 function getHash(): string {
   return location.hash || "#/login";
 }
 
-function isProtectedRoute(hash: string): boolean {
+function isProtected(hash: string): boolean {
   return hash === "#/feed" || hash === "#/profile" || hash.startsWith("#/post/");
 }
 
 export function router(container: HTMLElement): void {
   const hash = getHash();
-
-  // Protected routes needs token
   const token = getToken();
-  if (isProtectedRoute(hash) && !token) {
+
+  if (isProtected(hash) && !token) {
     location.hash = "#/login";
-    return renderLoginPage(container);
+    renderLoginPage(container);
+    return;
   }
 
-  // Public routes
   if (hash === "#/login") return renderLoginPage(container);
   if (hash === "#/register") return renderRegisterPage(container);
-
-  // Protected routes (now the token is checked)
   if (hash === "#/feed") return renderFeedPage(container);
   if (hash === "#/profile") return renderProfilePage(container);
 
@@ -37,7 +34,9 @@ export function router(container: HTMLElement): void {
   }
 
   container.innerHTML = `
-    <h1>Did not find the page</h1>
-    <p>Prøv <a href="#/login">Login</a> or <a href="#/feed">Feed</a></p>
+    <div class="container">
+      <h1>404</h1>
+      <p><a href="#/login">Login</a> | <a href="#/feed">Feed</a></p>
+    </div>
   `;
 }

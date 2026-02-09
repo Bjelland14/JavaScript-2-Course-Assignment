@@ -3,49 +3,42 @@ import type { Post } from "../../types/post.types";
 
 function renderPostItem(post: Post): string {
   const title = post.title?.trim() ? post.title : "(No title)";
-  const body = post.body?.trim() ? post.body : "";
   const author = post.author?.name ?? "Unknown";
 
   return `
-    <article style="border: 1px solid #ccc; padding: 12px; margin: 12px 0;">
+    <article class="card">
       <h3>${title}</h3>
-      <p><small>By ${author}</small></p>
-      ${body ? `<p>${body}</p>` : ""}
+      <p class="muted">By ${author}</p>
       <p><a href="#/post/${post.id}">Open post</a></p>
     </article>
   `;
 }
 
-export async function renderFeedPage(container: HTMLElement): Promise<void> {
+export function renderFeedPage(container: HTMLElement): void {
   container.innerHTML = `
-    <h1>Feed</h1>
-    <p id="feed-status">Loading posts...</p(>
-    <div id="feed-list"></div>
+    <div class="container">
+      <h1>Feed</h1>
+      <p id="status" class="muted">Loading...</p>
+      <div id="list"></div>
 
-    <nav style="margin-top: 16px;">
-      <a href="#/profile">My profile</a> |
-      <a href="#/login">To Login</a>
-    </nav>
+      <nav class="nav">
+        <a href="#/profile">My profile</a> |
+        <a href="#/login">Login</a>
+      </nav>
+    </div>
   `;
 
-  const statusEl = container.querySelector<HTMLParagraphElement>("#feed-status");
-  const listEl = container.querySelector<HTMLDivElement>("#feed-list");
-
+  const statusEl = container.querySelector<HTMLParagraphElement>("#status");
+  const listEl = container.querySelector<HTMLDivElement>("#list");
   if (!statusEl || !listEl) return;
 
-  try {
-    const result = await getPosts();
-    const posts = result.data;
-
-    if (posts.length === 0) {
-      statusEl.textContent = "No posts found.";
-      return;
+  (async () => {
+    try {
+      const res = await getPosts();
+      statusEl.textContent = "";
+      listEl.innerHTML = res.data.map(renderPostItem).join("");
+    } catch (err) {
+      statusEl.textContent = err instanceof Error ? err.message : "Failed to load";
     }
-
-    statusEl.textContent = "";
-    listEl.innerHTML = posts.map(renderPostItem).join("");
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to load feed";
-    statusEl.textContent = message;
-  }
+  })();
 }

@@ -20,24 +20,15 @@ export interface RegisterRequest {
   password: string;
 }
 
-export interface RegisterResponse {
-  data: {
-    name: string;
-    email: string;
-  };
-  meta: object;
-}
-
 export function login(body: LoginRequest): Promise<LoginResponse> {
-  return apiRequest<LoginResponse>("/auth/login", {
-    method: "POST",
-    body,
-  });
+  return apiRequest<LoginResponse>("/auth/login", { method: "POST", body });
 }
 
-export function register(body: RegisterRequest): Promise<RegisterResponse> {
-  return apiRequest<RegisterResponse>("/auth/register", {
-    method: "POST",
-    body,
-  });
+export function register(
+  body: RegisterRequest
+): Promise<{ data: { name: string; email: string }; meta: object }> {
+  return apiRequest<{ data: { name: string; email: string }; meta: object }>(
+    "/auth/register",
+    { method: "POST", body }
+  );
 }

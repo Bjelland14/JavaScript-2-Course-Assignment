@@ -1,9 +1,27 @@
 import { apiRequest } from "./client";
 import type { ApiListResponse, Post } from "../types/post.types";
 
+export interface CreatePostRequest {
+  title?: string;
+  body?: string;
+  media?: { url?: string; alt?: string };
+}
+
 export function getPosts(): Promise<ApiListResponse<Post>> {
-  // You can later add query params like ?limit=20&sort=created&sortOrder=desc
-  return apiRequest<ApiListResponse<Post>>("/social/posts", {
+  return apiRequest<ApiListResponse<Post>>("/social/posts", { method: "GET" });
+}
+
+export function getPostById(id: string): Promise<{ data: Post; meta: object }> {
+  return apiRequest<{ data: Post; meta: object }>(`/social/posts/${id}`, {
     method: "GET",
+  });
+}
+
+export function createPost(
+  payload: CreatePostRequest
+): Promise<{ data: Post; meta: object }> {
+  return apiRequest<{ data: Post; meta: object }>("/social/posts", {
+    method: "POST",
+    body: payload,
   });
 }
