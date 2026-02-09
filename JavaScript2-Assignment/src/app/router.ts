@@ -22,6 +22,11 @@ export function router(container: HTMLElement): void {
     renderLoginPage(container);
     return;
   }
+  if (hash === "#/profile") {
+  void renderProfilePage(container);
+  return;
+}
+
 
   if (hash === "#/login") return renderLoginPage(container);
   if (hash === "#/register") return renderRegisterPage(container);
@@ -40,3 +45,4 @@ export function router(container: HTMLElement): void {
     </div>
   `;
 }
+

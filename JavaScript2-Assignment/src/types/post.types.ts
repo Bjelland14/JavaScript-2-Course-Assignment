@@ -10,3 +10,4 @@ export interface Post {
   media?: { url?: string; alt?: string };
   author?: { name?: string };
 }
+

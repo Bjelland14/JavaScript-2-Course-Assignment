@@ -1,5 +1,6 @@
 import { login } from "../../api/auth";
-import { saveProfileName, saveToken } from "../../utils/storage";
+import { createApiKey } from "../../api/apiKey";
+import { getApiKey, saveApiKey, saveProfileName, saveToken } from "../../utils/storage";
 
 export function renderLoginPage(container: HTMLElement): void {
   container.innerHTML = `
@@ -42,6 +43,13 @@ export function renderLoginPage(container: HTMLElement): void {
       const result = await login({ email, password });
       saveToken(result.data.accessToken);
       saveProfileName(result.data.name);
+
+      const existing = getApiKey();
+      if (!existing) {
+        const apiKeyRes = await createApiKey("fed2-js2-ca");
+        saveApiKey(apiKeyRes.data.key);
+      }
+
       location.hash = "#/feed";
     } catch (err) {
       errorEl.textContent = err instanceof Error ? err.message : "Login failed";

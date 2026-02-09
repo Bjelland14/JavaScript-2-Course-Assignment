@@ -1,5 +1,6 @@
 const TOKEN_KEY = "token";
 const PROFILE_NAME_KEY = "profileName";
+const API_KEY_KEY = "apiKey";
 
 export function saveToken(token: string): void {
   localStorage.setItem(TOKEN_KEY, token);
@@ -7,10 +8,6 @@ export function saveToken(token: string): void {
 
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
-}
-
-export function clearToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
 }
 
 export function saveProfileName(name: string): void {
@@ -21,7 +18,16 @@ export function getProfileName(): string | null {
   return localStorage.getItem(PROFILE_NAME_KEY);
 }
 
+export function saveApiKey(key: string): void {
+  localStorage.setItem(API_KEY_KEY, key);
+}
+
+export function getApiKey(): string | null {
+  return localStorage.getItem(API_KEY_KEY);
+}
+
 export function clearAuth(): void {
-  clearToken();
+  localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(PROFILE_NAME_KEY);
+  localStorage.removeItem(API_KEY_KEY);
 }

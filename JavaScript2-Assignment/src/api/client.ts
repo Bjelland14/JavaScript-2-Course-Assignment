@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "./config";
-import { getToken } from "../utils/storage";
+import { getApiKey, getToken } from "../utils/storage";
 
 /**
  * Makes an HTTP request to the Noroff API.
@@ -9,15 +9,15 @@ export async function apiRequest<T>(
   options: RequestInit & { body?: unknown } = {}
 ): Promise<T> {
   const token = getToken();
+  const apiKey = getApiKey();
 
   const headers: HeadersInit = {
     "Content-Type": "application/json",
     ...(options.headers ?? {}),
   };
 
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  if (apiKey) headers["X-Noroff-API-Key"] = apiKey;
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
