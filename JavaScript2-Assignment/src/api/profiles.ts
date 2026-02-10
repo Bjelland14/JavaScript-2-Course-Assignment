@@ -18,3 +18,15 @@ export function getProfilePosts(name: string): Promise<ApiListResponse<Post>> {
     method: "GET",
   });
 }
+
+export function followProfile(name: string): Promise<{ data: object; meta: object }> {
+  return apiRequest<{ data: object; meta: object }>(`/social/profiles/${name}/follow`, {
+    method: "PUT",
+  });
+}
+
+export function unfollowProfile(name: string): Promise<{ data: object; meta: object }> {
+  return apiRequest<{ data: object; meta: object }>(`/social/profiles/${name}/unfollow`, {
+    method: "PUT",
+  });
+}

@@ -88,3 +88,10 @@ a {
   height: 60px;
   border-radius: 50%;
 }
+
+.post-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+}

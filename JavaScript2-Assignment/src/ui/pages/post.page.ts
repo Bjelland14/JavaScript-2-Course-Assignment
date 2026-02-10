@@ -7,19 +7,20 @@ function renderPost(post: Post): string {
   const body = post.body?.trim() ? post.body : "";
   const author = post.author?.name ?? "Unknown";
 
+  const mediaUrl = post.media?.url;
+  const mediaAlt = post.media?.alt ?? "Post image";
+
   return `
     <article class="card">
       <h1>${title}</h1>
       <p class="muted">By ${author}</p>
+      ${mediaUrl ? `<img class="post-img" src="${mediaUrl}" alt="${mediaAlt}" />` : ""}
       ${body ? `<p>${body}</p>` : "<p><em>No content</em></p>"}
     </article>
   `;
 }
 
-export async function renderPostPage(
-  container: HTMLElement,
-  postId: string
-): Promise<void> {
+export async function renderPostPage(container: HTMLElement, postId: string): Promise<void> {
   container.innerHTML = `
     <div class="container">
       <p id="status" class="muted">Loading...</p>
@@ -41,7 +42,6 @@ export async function renderPostPage(
     statusEl.textContent = "";
     contentEl.innerHTML = renderPost(post);
 
-    // Only show edit/delete if you own the post
     const myName = getProfileName();
     const isOwner = myName && post.author?.name === myName;
     if (!isOwner) return;
@@ -59,6 +59,14 @@ export async function renderPostPage(
             <textarea name="body" rows="4">${post.body ?? ""}</textarea>
           </label>
 
+          <label>Media URL (optional)
+            <input name="mediaUrl" type="url" value="${post.media?.url ?? ""}" />
+          </label>
+
+          <label>Media alt text (optional)
+            <input name="mediaAlt" type="text" value="${post.media?.alt ?? ""}" />
+          </label>
+
           <button class="btn" type="submit">Save</button>
           <button class="btn" id="delete-btn" type="button">Delete</button>
         </form>
@@ -74,7 +82,6 @@ export async function renderPostPage(
     const successEl = container.querySelector<HTMLParagraphElement>("#edit-success");
     if (!form || !deleteBtn || !errorEl || !successEl) return;
 
-    // Update
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       errorEl.textContent = "";
@@ -83,9 +90,25 @@ export async function renderPostPage(
       const fd = new FormData(form);
       const title = String(fd.get("title") ?? "").trim();
       const body = String(fd.get("body") ?? "").trim();
+      const mediaUrl = String(fd.get("mediaUrl") ?? "").trim();
+      const mediaAlt = String(fd.get("mediaAlt") ?? "").trim();
+
+      const payload: {
+        title?: string;
+        body?: string;
+        media?: { url?: string; alt?: string };
+      } = {};
+
+      if (title) payload.title = title;
+      if (body) payload.body = body;
+
+      if (mediaUrl) {
+        payload.media = { url: mediaUrl };
+        if (mediaAlt) payload.media.alt = mediaAlt;
+      }
 
       try {
-        await updatePost(postId, { title, body });
+        await updatePost(postId, payload);
         successEl.textContent = "Saved!";
         await renderPostPage(container, postId);
       } catch (err) {
@@ -93,7 +116,6 @@ export async function renderPostPage(
       }
     });
 
-    // Delete
     deleteBtn.addEventListener("click", async () => {
       errorEl.textContent = "";
       successEl.textContent = "";

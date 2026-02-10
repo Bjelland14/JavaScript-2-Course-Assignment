@@ -14,11 +14,13 @@ export interface UpdatePostRequest {
 }
 
 export function getPosts(): Promise<ApiListResponse<Post>> {
-  return apiRequest<ApiListResponse<Post>>("/social/posts", { method: "GET" });
+  return apiRequest<ApiListResponse<Post>>("/social/posts?_author=true", {
+    method: "GET",
+  });
 }
 
 export function getPostById(id: string): Promise<{ data: Post; meta: object }> {
-  return apiRequest<{ data: Post; meta: object }>(`/social/posts/${id}`, {
+  return apiRequest<{ data: Post; meta: object }>(`/social/posts/${id}?_author=true`, {
     method: "GET",
   });
 }

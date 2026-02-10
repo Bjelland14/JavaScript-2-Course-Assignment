@@ -4,13 +4,19 @@ import { renderRegisterPage } from "../ui/pages/register.page";
 import { renderFeedPage } from "../ui/pages/feed.page";
 import { renderProfilePage } from "../ui/pages/profile.page";
 import { renderPostPage } from "../ui/pages/post.page";
+import { renderUserPage } from "../ui/pages/user.page";
 
 function getHash(): string {
   return location.hash || "#/login";
 }
 
 function isProtected(hash: string): boolean {
-  return hash === "#/feed" || hash === "#/profile" || hash.startsWith("#/post/");
+  return (
+    hash === "#/feed" ||
+    hash === "#/profile" ||
+    hash.startsWith("#/post/") ||
+    hash.startsWith("#/user/")
+  );
 }
 
 export function router(container: HTMLElement): void {
@@ -22,20 +28,26 @@ export function router(container: HTMLElement): void {
     renderLoginPage(container);
     return;
   }
-  if (hash === "#/profile") {
-  void renderProfilePage(container);
-  return;
-}
-
 
   if (hash === "#/login") return renderLoginPage(container);
   if (hash === "#/register") return renderRegisterPage(container);
   if (hash === "#/feed") return renderFeedPage(container);
-  if (hash === "#/profile") return renderProfilePage(container);
+
+  if (hash === "#/profile") {
+    void renderProfilePage(container);
+    return;
+  }
 
   if (hash.startsWith("#/post/")) {
     const id = hash.replace("#/post/", "");
-    return renderPostPage(container, id);
+    void renderPostPage(container, id);
+    return;
+  }
+
+  if (hash.startsWith("#/user/")) {
+    const name = hash.replace("#/user/", "");
+    void renderUserPage(container, name);
+    return;
   }
 
   container.innerHTML = `
@@ -45,4 +57,3 @@ export function router(container: HTMLElement): void {
     </div>
   `;
 }
-
