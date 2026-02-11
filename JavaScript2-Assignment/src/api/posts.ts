@@ -25,6 +25,14 @@ export function getPostById(id: string): Promise<{ data: Post; meta: object }> {
   });
 }
 
+/**
+ * Creates a new post for the logged in user.
+ *
+ * @param payload - Post data (title, body, optional media)
+ * @returns Promise containing the created post data
+ */
+
+
 export function createPost(
   payload: CreatePostRequest
 ): Promise<{ data: Post; meta: object }> {

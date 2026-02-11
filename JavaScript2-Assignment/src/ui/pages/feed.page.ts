@@ -25,6 +25,14 @@ function renderPostItem(post: Post): string {
   `;
 }
 
+/**
+ * Filters posts based on a search query.
+ *
+ * @param posts - Array of posts
+ * @param query - Search string entered by the user
+ * @returns Filtered array of posts
+ */
+
 function filterPosts(posts: Post[], query: string): Post[] {
   const q = query.trim().toLowerCase();
   if (!q) return posts;

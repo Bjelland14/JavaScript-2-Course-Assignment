@@ -4,6 +4,18 @@ import { getApiKey, getToken } from "../utils/storage";
 /**
  * Makes an HTTP request to the Noroff API.
  */
+
+/**
+ * Makes an HTTP request to the Noroff API.
+ * Automatically attaches Authorization token and API key if they exist.
+ *
+ * @template T - Expected response type
+ * @param endpoint - API endpoint starting with "/"
+ * @param options - Fetch options (method, body, headers)
+ * @returns Promise resolving to parsed JSON response
+ * @throws Error if the request fails
+ */
+
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit & { body?: unknown } = {}
