@@ -3,10 +3,6 @@ import { getApiKey, getToken } from "../utils/storage";
 
 /**
  * Makes an HTTP request to the Noroff API.
- */
-
-/**
- * Makes an HTTP request to the Noroff API.
  * Automatically attaches Authorization token and API key if they exist.
  *
  * @template T - Expected response type
@@ -15,7 +11,6 @@ import { getApiKey, getToken } from "../utils/storage";
  * @returns Promise resolving to parsed JSON response
  * @throws Error if the request fails
  */
-
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit & { body?: unknown } = {}
@@ -23,9 +18,9 @@ export async function apiRequest<T>(
   const token = getToken();
   const apiKey = getApiKey();
 
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...(options.headers ?? {}),
+    ...((options.headers as Record<string, string> | undefined) ?? {}),
   };
 
   if (token) headers["Authorization"] = `Bearer ${token}`;
