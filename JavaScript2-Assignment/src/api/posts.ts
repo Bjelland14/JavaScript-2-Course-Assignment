@@ -20,9 +20,10 @@ export function getPosts(): Promise<ApiListResponse<Post>> {
 }
 
 export function getPostById(id: string): Promise<{ data: Post; meta: object }> {
-  return apiRequest<{ data: Post; meta: object }>(`/social/posts/${id}?_author=true`, {
-    method: "GET",
-  });
+  return apiRequest<{ data: Post; meta: object }>(
+    `/social/posts/${id}?_author=true`,
+    { method: "GET" }
+  );
 }
 
 /**
@@ -31,14 +32,12 @@ export function getPostById(id: string): Promise<{ data: Post; meta: object }> {
  * @param payload - Post data (title, body, optional media)
  * @returns Promise containing the created post data
  */
-
-
 export function createPost(
   payload: CreatePostRequest
 ): Promise<{ data: Post; meta: object }> {
   return apiRequest<{ data: Post; meta: object }>("/social/posts", {
     method: "POST",
-    body: payload as unknown,
+    body: payload,
   });
 }
 
@@ -48,7 +47,7 @@ export function updatePost(
 ): Promise<{ data: Post; meta: object }> {
   return apiRequest<{ data: Post; meta: object }>(`/social/posts/${id}`, {
     method: "PUT",
-    body: payload as unknown,
+    body: payload,
   });
 }
 

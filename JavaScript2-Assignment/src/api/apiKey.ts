@@ -3,6 +3,7 @@ import { apiRequest } from "./client";
 export interface CreateApiKeyResponse {
   data: {
     name: string;
+    status: string;
     key: string;
   };
   meta: object;

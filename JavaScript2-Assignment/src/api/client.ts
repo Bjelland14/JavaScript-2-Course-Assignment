@@ -1,6 +1,11 @@
 import { API_BASE_URL } from "./config";
 import { getApiKey, getToken } from "../utils/storage";
 
+type ApiRequestOptions = Omit<RequestInit, "body" | "headers"> & {
+  body?: unknown;
+  headers?: Record<string, string>;
+};
+
 /**
  * Makes an HTTP request to the Noroff API.
  * Automatically attaches Authorization token and API key if they exist.
@@ -13,23 +18,23 @@ import { getApiKey, getToken } from "../utils/storage";
  */
 export async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit & { body?: unknown } = {}
+  options: ApiRequestOptions = {}
 ): Promise<T> {
   const token = getToken();
   const apiKey = getApiKey();
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...((options.headers as Record<string, string> | undefined) ?? {}),
+    ...(options.headers ?? {}),
   };
 
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  if (token) headers.Authorization = `Bearer ${token}`;
   if (apiKey) headers["X-Noroff-API-Key"] = apiKey;
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers,
-    body: options.body ? JSON.stringify(options.body) : undefined,
+    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
   });
 
   const text = await res.text();
