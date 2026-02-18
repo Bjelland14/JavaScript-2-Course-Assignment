@@ -23,6 +23,7 @@ export function router(container: HTMLElement): void {
   const hash = getHash();
   const token = getToken();
 
+  // Redirect to login if user tries to access protected route without token
   if (isProtected(hash) && !token) {
     location.hash = "#/login";
     renderLoginPage(container);

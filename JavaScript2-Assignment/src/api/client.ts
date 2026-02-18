@@ -28,13 +28,16 @@ export async function apiRequest<T>(
     ...(options.headers ?? {}),
   };
 
+  // Attach token if user is logged in
   if (token) headers.Authorization = `Bearer ${token}`;
+
+  // Attach API key required by Noroff API
   if (apiKey) headers["X-Noroff-API-Key"] = apiKey;
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers,
-    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    body: options.body ? JSON.stringify(options.body) : undefined,
   });
 
   const text = await res.text();

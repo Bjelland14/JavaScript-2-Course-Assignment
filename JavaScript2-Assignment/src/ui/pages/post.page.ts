@@ -43,6 +43,7 @@ export async function renderPostPage(container: HTMLElement, postId: string): Pr
     contentEl.innerHTML = renderPost(post);
 
     const myName = getProfileName();
+    // Only allow editing if logged-in user owns the post
     const isOwner = myName && post.author?.name === myName;
     if (!isOwner) return;
 
