@@ -3,14 +3,14 @@ const PROFILE_NAME_KEY = "profileName";
 const API_KEY_KEY = "apiKey";
 
 function getStore(): Storage | null {
-  // Try localStorage first
+  
   try {
     const test = "__test__";
     localStorage.setItem(test, "1");
     localStorage.removeItem(test);
     return localStorage;
   } catch {
-    // Fallback to sessionStorage
+    
     try {
       const test = "__test__";
       sessionStorage.setItem(test, "1");

@@ -7,8 +7,7 @@ if (!app) {
   throw new Error("Could not find #app in index.html");
 }
 
-// If the app is opened without a hash route (common on GitHub Pages),
-// default to the login route.
+
 if (!location.hash) {
   location.hash = "#/login";
 }
