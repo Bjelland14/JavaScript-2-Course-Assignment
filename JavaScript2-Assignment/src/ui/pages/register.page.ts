@@ -33,24 +33,48 @@ export function renderRegisterPage(container: HTMLElement): void {
   const form = container.querySelector<HTMLFormElement>("#register-form");
   const errorEl = container.querySelector<HTMLParagraphElement>("#register-error");
   const successEl = container.querySelector<HTMLParagraphElement>("#register-success");
+
   if (!form || !errorEl || !successEl) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     errorEl.textContent = "";
     successEl.textContent = "";
 
     const fd = new FormData(form);
-    const name = String(fd.get("name") ?? "");
-    const email = String(fd.get("email") ?? "");
+    const name = String(fd.get("name") ?? "").trim();
+    const email = String(fd.get("email") ?? "").trim();
     const password = String(fd.get("password") ?? "");
+
+    // Name validation
+    const nameRegex = /^[a-z0-9_]+$/i;
+    if (!nameRegex.test(name)) {
+      errorEl.textContent = "Name can only contain letters, numbers and underscore.";
+      return;
+    }
+
+    // Email validation (stud email)
+    if (!email.endsWith("@stud.noroff.no")) {
+      errorEl.textContent = "Email must be a @stud.noroff.no address.";
+      return;
+    }
+
+    // Password validation
+    if (password.length < 8) {
+      errorEl.textContent = "Password must be at least 8 characters.";
+      return;
+    }
 
     try {
       await register({ name, email, password });
-      successEl.textContent = "Registered! Go to login.";
-      location.hash = "#/login";
+      successEl.textContent = "Registered successfully! Redirecting to login...";
+      setTimeout(() => {
+        location.hash = "#/login";
+      }, 1000);
     } catch (err) {
-      errorEl.textContent = err instanceof Error ? err.message : "Register failed";
+      errorEl.textContent =
+        err instanceof Error ? err.message : "Register failed";
     }
   });
 }

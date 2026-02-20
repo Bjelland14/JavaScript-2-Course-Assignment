@@ -2,17 +2,15 @@
 Tool used: ChatGPT
 Purpose: Conceptual explanations and debugging assistance
 Usage period: Before updated AI policy
-Date: 13.02–18.02 ("Before change")
+Date: 14.02.26- 16.02.26
 
 ## What AI was used for
 
-- Clarifying how async/await works in JavaScript
+- 
 
 - Debugging TypeScript type errors
 
 - Explaining differences between localStorage and sessionStorage
-
-- General explanations of JavaScript concepts when I was unsure
 
 ## What AI was NOT used for
 

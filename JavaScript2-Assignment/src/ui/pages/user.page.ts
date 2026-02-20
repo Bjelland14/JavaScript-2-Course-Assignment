@@ -1,4 +1,5 @@
 import { followProfile, getProfile, getProfilePosts, unfollowProfile } from "../../api/profiles";
+import { getProfileName } from "../../utils/storage";
 import type { Post } from "../../types/post.types";
 
 function renderPostItem(post: Post): string {
@@ -17,7 +18,18 @@ function renderPostItem(post: Post): string {
 export async function renderUserPage(container: HTMLElement, userName: string): Promise<void> {
   container.innerHTML = `
     <div class="container">
+
+      <nav class="nav" style="margin-bottom: 24px;">
+        <a href="#/feed">Feed</a> |
+        <a href="#/profile">My profile</a> |
+        <a href="#/login" id="logout-link">Logout</a>
+      </nav>
+
       <h1>User</h1>
+
+      <nav class="nav" style="margin-bottom: 16px;">
+        <a href="#/feed">← Back to feed</a>
+      </nav>
 
       <p class="muted">Viewing: <strong>${userName}</strong></p>
 
@@ -36,23 +48,33 @@ export async function renderUserPage(container: HTMLElement, userName: string): 
       <p id="posts-status" class="muted"></p>
       <div id="posts-list"></div>
 
-      <nav class="nav">
-        <a href="#/feed">Back to feed</a>
-      </nav>
     </div>
   `;
 
   const userStatus = container.querySelector<HTMLParagraphElement>("#user-status");
   const userContent = container.querySelector<HTMLDivElement>("#user-content");
-
   const followBtn = container.querySelector<HTMLButtonElement>("#follow-btn");
   const unfollowBtn = container.querySelector<HTMLButtonElement>("#unfollow-btn");
   const followMsg = container.querySelector<HTMLParagraphElement>("#follow-msg");
-
   const postsStatus = container.querySelector<HTMLParagraphElement>("#posts-status");
   const postsList = container.querySelector<HTMLDivElement>("#posts-list");
+  const logoutLink = container.querySelector<HTMLAnchorElement>("#logout-link");
 
   if (!userStatus || !userContent || !followBtn || !unfollowBtn || !followMsg || !postsStatus || !postsList) return;
+
+  // Logout
+  if (logoutLink) {
+    logoutLink.addEventListener("click", () => {
+      localStorage.clear();
+    });
+  }
+
+  // Hide follow buttons if viewing own profile
+  const myName = getProfileName();
+  if (myName === userName) {
+    followBtn.style.display = "none";
+    unfollowBtn.style.display = "none";
+  }
 
   // Load profile
   try {
@@ -78,7 +100,7 @@ export async function renderUserPage(container: HTMLElement, userName: string): 
     return;
   }
 
-  // Follow/unfollow
+  // Follow
   followBtn.addEventListener("click", async () => {
     followMsg.textContent = "";
     try {
@@ -89,6 +111,7 @@ export async function renderUserPage(container: HTMLElement, userName: string): 
     }
   });
 
+  // Unfollow
   unfollowBtn.addEventListener("click", async () => {
     followMsg.textContent = "";
     try {
@@ -99,10 +122,11 @@ export async function renderUserPage(container: HTMLElement, userName: string): 
     }
   });
 
-  // Load user posts
+  // Load posts
   try {
     postsStatus.textContent = "Loading posts...";
     const postsRes = await getProfilePosts(userName);
+
     postsStatus.textContent = "";
     postsList.innerHTML = postsRes.data.length
       ? postsRes.data.map(renderPostItem).join("")
