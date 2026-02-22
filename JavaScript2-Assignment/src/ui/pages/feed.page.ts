@@ -106,7 +106,7 @@ export function renderFeedPage(container: HTMLElement): void {
   if (!form || !createError || !createSuccess || !statusEl || !listEl || !searchInput || !searchInfo) return;
 
   let allPosts: Post[] = [];
-
+// Load all posts from API and render them
   async function loadFeed(): Promise<void> {
     statusEl!.textContent = "Loading...";
     listEl!.innerHTML = "";
@@ -129,9 +129,9 @@ export function renderFeedPage(container: HTMLElement): void {
       statusEl!.textContent = err instanceof Error ? err.message : "Failed to load feed";
     }
   }
-
+// Immediately load posts when page is rendered
   void loadFeed();
-
+// Handle search input to filter posts
   searchInput!.addEventListener("input", () => {
     const filtered = filterPosts(allPosts, searchInput!.value);
 

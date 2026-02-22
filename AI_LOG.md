@@ -4,7 +4,7 @@
 ChatGPT
 
 ## Usage Period
-14.02.26 – 20.02.26
+16.02.26 – 22.02.26
 
 ## Purpose
 Concept clarification, debugging assistance, and deployment troubleshooting

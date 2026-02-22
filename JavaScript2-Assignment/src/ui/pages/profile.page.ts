@@ -46,7 +46,7 @@ export async function renderProfilePage(container: HTMLElement): Promise<void> {
     profileStatus.textContent = "Missing profile name. Please log in again.";
     return;
   }
-
+// Display logged-in user's profile
   try {
     const profileRes = await getProfile(myName);
     const profile = profileRes.data;
@@ -70,6 +70,7 @@ export async function renderProfilePage(container: HTMLElement): Promise<void> {
     return;
   }
 
+// Load user's posts
   try {
     postsStatus.textContent = "Loading posts...";
     const postsRes = await getProfilePosts(myName);
