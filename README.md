@@ -48,3 +48,6 @@ npm run dev
 
 
 Live site:
+
+https://bjelland14.github.io/JavaScript-2-Course-Assignment/
+
